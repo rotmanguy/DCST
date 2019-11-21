@@ -15,11 +15,11 @@ They can be downloaded from here: \
 https://fasttext.cc/docs/en/crawl-vectors.html . \
 Word embedding for cu (Old Church Slavonic) can be found in this link: \
 https://github.com/mwydmuch/extremeText/blob/master/pretrained-vectors.md . \
-Once unzipped, the multilingual word embedding (.vec extensions) should be placed under the "data/multilingual_word_embeddings" folder.
+Once unzipped, the multilingual word embedding (.vec extensions) should be placed under the `data/multilingual_word_embeddings` folder.
 
 It is also optional to download the GloVe embeddings for English from: \
 http://nlp.stanford.edu/data/glove.6B.zip .\
-Once unzziped, the text file (.txt extension) should be placed under "data" folder.
+Once unzziped, the text file (.txt extension) should be placed under `data` folder.
 
 # Low Resource In-domain Experiments
 ## Running the base Biaffine Parser
@@ -57,7 +57,7 @@ As a final step we can now run the DCST (ensemble) parser:
 ```
 python examples/GraphParser.py --dataset ud --domain da --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos  --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.da.300.vec" --char_embedding random --set_num_training_samples 500 --gating --num_gates 4 --load_sequence_taggers_paths saved_models/ud_sequence_tagger_da_relative_pos_based_500_unlabeled/domain_da.pt saved_models/ud_sequence_tagger_da_number_of_children_500_unlabeled/domain_da.pt saved_models/ud_sequence_tagger_da_distance_from_the_root_500_unlabeled/domain_da.pt --model_path saved_models/ud_parser_da_ensemble_500_gating_unlabeled/
 ```
-If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the "num_gates", "load_sequence_taggers_paths" and "model_path" inputs accordingly.
+If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the `num_gates`, `load_sequence_taggers_paths` and `model_path` inputs accordingly.
 
 # Cross-domain Experiments
 ## Running the base Biaffine Parser
@@ -94,5 +94,6 @@ Finally, we can run the DCST (ensemble) parser in order to re-train the source d
 ```
 python examples/GraphParser_for_DA.py --dataset ud --src_domain cs_fictree --tgt_domain cs_pdt --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos  --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --gating --num_gates 4 --load_sequence_taggers_paths saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_relative_pos_based_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_number_of_children_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_distance_from_the_root_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt --model_path saved_models/ud_parser_cs_fictree_cs_pdt_ensemble_gating/
 ```
-If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the `num_gates`, `load_sequence_taggers_paths` and `model_path` inputs accordingly.\
+If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the `num_gates`, `load_sequence_taggers_paths` and `model_path` inputs accordingly.
+
 There is also an option to freeze the sequence tagger encoders, simply by adding `--freeze` to the command line.
