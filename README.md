@@ -21,6 +21,7 @@ It is also optional to download the GloVe embeddings for English from: \
 http://nlp.stanford.edu/data/glove.6B.zip .\
 Once unzziped, the text file (.txt extension) should be placed under "data" folder.
 
+# Low Resource In-domain Experiments
 ## Running the base Biaffine Parser
 Here is an example for training the entire da (Danish) data set:
 ```
@@ -31,6 +32,7 @@ If you wish to to train only a subset of the training set, for example selecting
 ```
 python examples/GraphParser.py --dataset ud --domain da --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos  --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.da.300.vec" --char_embedding random --model_path saved_models/ud_parser_da_500 --set_num_training_samples 500
 ```
+The remaining unlabeled data is labeled automatically at the end of the training.
 ## Running the Sequence Tagger
 Once training the base parser, we can now run the Sequnece Tagger on any of the three proposed sequence tagging tasks in order to learn the syntactical contextualized word embeddings from the unlabeled data set.
 
@@ -46,7 +48,7 @@ Running the Distance from the Root task:
 ```
 python examples/SequenceTagger.py --dataset ud --domain da --task distance_from_the_root --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --tag_space 128 --num_layers 3 --num_filters 100 --use_char  --use_pos --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.da.300.vec" --char_embedding random --parser_path saved_models/ud_parser_da_500/ --use_unlabeled_data --model_path saved_models/ud_sequence_tagger_da_distance_from_the_root_500_unlabeled/
 ```
-We also allow the option of learning contextualized word embeddings from a Language Model on the unlabeled data:\
+We also allow the option of learning contextualized word embeddings from a Language Model on the unlabeled data:
 ```
 python examples/SequenceTagger.py --dataset ud --domain da --task language_model --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --tag_space 128 --num_layers 3 --num_filters 100 --use_char  --use_pos --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.da.300.vec" --char_embedding random --parser_path saved_models/ud_parser_da_500/ --use_unlabeled_data --model_path saved_models/ud_sequence_tagger_da_language_model_500_unlabeled/
 ```
@@ -58,14 +60,17 @@ python examples/GraphParser.py --dataset ud --domain da --rnn_mode LSTM --num_ep
 If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the "num_gates", "load_sequence_taggers_paths" and "model_path" inputs accordingly.
 
 # Cross-domain Experiments
+## Running the base Biaffine Parser
 First, run the base parser on the source domain, for example:
 ```
 python examples/GraphParser.py --dataset ud --domain cs_fictree --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --model_path saved_models/ud_parser_cs_fictree_full_train
 ```
+## Labeling the Unlabeled Target Data
 Next, we need to label the unlabeled target domain data by the trained parser:
 ```
 python examples/GraphParser.py --dataset ud --domain cs_pdt --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --model_path saved_models/ud_parser_cs_fictree_full_train --eval_mode --strict --load_path saved_models/ud_parser_cs_fictree_full_train/domain_cs_fictree.pt
 ```
+## Running the Sequence Tagger
 Now, we can train the sequence tagger on the auto-labeled target data according to the different sequence tagging tasks.
 
 Running the Relative Pos-based task:
@@ -84,8 +89,8 @@ Running the Language Model task:
 ```
 python examples/SequenceTagger_for_DA.py --dataset ud --src_domain cs_fictree --tgt_domain cs_pdt --task language_model --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --tag_space 128 --num_layers 3 --num_filters 100 --use_char  --use_pos --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --parser_path saved_models/ud_parser_cs_fictree_full_train/ --use_unlabeled_data --model_path saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_language_model_unlabeled/
 ```
-
-Finally, we can run the DCST (ensemble) parser in order to re-train the source domain with our contextualized word embeddings:\
+## Final step - Running the combined DCST Parser
+Finally, we can run the DCST (ensemble) parser in order to re-train the source domain with our contextualized word embeddings:
 ```
 python examples/GraphParser_for_DA.py --dataset ud --src_domain cs_fictree --tgt_domain cs_pdt --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos  --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --gating --num_gates 4 --load_sequence_taggers_paths saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_relative_pos_based_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_number_of_children_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_distance_from_the_root_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt --model_path saved_models/ud_parser_cs_fictree_cs_pdt_ensemble_gating/
 ```
