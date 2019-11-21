@@ -4,8 +4,8 @@ Coming soon..
 
 # Data
 First download the Universal Dependencies treebanks from https://universaldependencies.org/ and unzip the folder.
-Then, run the script:
-`python utils/io_/convert_ud_to_onto_format.py --ud_data_path "path"`
+Then, run the script: \
+`python utils/io_/convert_ud_to_onto_format.py --ud_data_path "path"` \
 (e.g. `python utils/io_/convert_ud_to_onto_format.py --ud_data_path /Data/Datasets/Universal_Dependencies_2.3/ud-treebanks-v2.3`)
 
 # Low Resource In-domain Experiments
