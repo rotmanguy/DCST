@@ -119,9 +119,9 @@ def read_arguments():
             alphabet_data_paths['additional_' + split] = data_path + '_' + split + '_' + 'all'
         else:
             if '_' in args_dict['domain']:
-                args_dict['alphabet_data_paths'][split] = data_path + '_' + split + '_' + args_dict['domain'].split('_')[0]
+                alphabet_data_paths[split] = data_path + '_' + split + '_' + args_dict['domain'].split('_')[0]
             else:
-                args_dict['alphabet_data_paths'][split] = args_dict['data_paths'][split]
+                alphabet_data_paths[split] = args_dict['data_paths'][split]
     args_dict['alphabet_data_paths'] = alphabet_data_paths
     args_dict['num_epochs'] = args.num_epochs
     args_dict['batch_size'] = args.batch_size
