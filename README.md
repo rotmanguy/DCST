@@ -8,7 +8,6 @@ Then, run the script: \
 `python utils/io_/convert_ud_to_onto_format.py --ud_data_path "path"` \
 (e.g. `python utils/io_/convert_ud_to_onto_format.py --ud_data_path /Data/Datasets/Universal_Dependencies_2.3/ud-treebanks-v2.3`)
 
-# Low Resource In-domain Experiments
 ## Multilingual Word Embeddings
 It is also required to download the FastText multilingual word embeddings for the UD languages.
 They can be downloaded from here: \
