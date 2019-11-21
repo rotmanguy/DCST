@@ -1,7 +1,8 @@
-Coming soon..
-
 # Requirements
-
+Simply run:
+```
+pip install -r requirements.txt
+```
 # Data
 First download the Universal Dependencies treebanks from https://universaldependencies.org/ and unzip the folder.
 Then, run the script: \
