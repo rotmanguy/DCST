@@ -1,5 +1,3 @@
-Coming soon..
-
 # Requirements
 Simply run:
 ```
