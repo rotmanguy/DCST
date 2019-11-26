@@ -22,6 +22,11 @@ http://nlp.stanford.edu/data/glove.6B.zip .\
 Once unzziped, the text file (.txt extension) should be placed under `data` folder.
 
 # Low Resource In-domain Experiments
+In order to run the low resource in-domain experiments there are three steps we need to follow:
+1. Running the base Biaffine parser
+2. Running the sequence tagger(s)
+3. Running the combined DCST parser
+
 ## Running the base Biaffine Parser
 Here is an example for training the entire da (Danish) data set:
 ```
@@ -52,7 +57,7 @@ We also allow the option of learning contextualized word embeddings from a Langu
 ```
 python examples/SequenceTagger.py --dataset ud --domain da --task language_model --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --tag_space 128 --num_layers 3 --num_filters 100 --use_char  --use_pos --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.da.300.vec" --char_embedding random --parser_path saved_models/ud_parser_da_500/ --use_unlabeled_data --model_path saved_models/ud_sequence_tagger_da_language_model_500_unlabeled/
 ```
-## Final step - Running the combined DCST Parser
+## Final step - Running the Combined DCST Parser
 As a final step we can now run the DCST (ensemble) parser:
 ```
 python examples/GraphParser.py --dataset ud --domain da --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos  --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.da.300.vec" --char_embedding random --set_num_training_samples 500 --gating --num_gates 4 --load_sequence_taggers_paths saved_models/ud_sequence_tagger_da_relative_pos_based_500_unlabeled/domain_da.pt saved_models/ud_sequence_tagger_da_number_of_children_500_unlabeled/domain_da.pt saved_models/ud_sequence_tagger_da_distance_from_the_root_500_unlabeled/domain_da.pt --model_path saved_models/ud_parser_da_ensemble_500_gating_unlabeled/
@@ -60,6 +65,12 @@ python examples/GraphParser.py --dataset ud --domain da --rnn_mode LSTM --num_ep
 If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the `num_gates`, `load_sequence_taggers_paths` and `model_path` inputs accordingly.
 
 # Cross-domain Experiments
+In order to run the cross-domain experiments there are four steps we need to follow:
+1. Running the base Biaffine parser (on the source domain)
+2. Labeling the unlabeled target data
+3. Running the sequence tagger(s) (on the target domain)
+4. Running the combined DCST parser (on the source domain)
+
 ## Running the base Biaffine Parser
 First, run the base parser on the source domain, for example:
 ```
@@ -89,7 +100,7 @@ Running the Language Model task:
 ```
 python examples/SequenceTagger_for_DA.py --dataset ud --src_domain cs_fictree --tgt_domain cs_pdt --task language_model --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --tag_space 128 --num_layers 3 --num_filters 100 --use_char  --use_pos --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --parser_path saved_models/ud_parser_cs_fictree_full_train/ --use_unlabeled_data --model_path saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_language_model_unlabeled/
 ```
-## Final step - Running the combined DCST Parser
+## Final step - Running the Combined DCST Parser
 Finally, we can run the DCST (ensemble) parser in order to re-train the source domain with our contextualized word embeddings:
 ```
 python examples/GraphParser_for_DA.py --dataset ud --src_domain cs_fictree --tgt_domain cs_pdt --rnn_mode LSTM --num_epochs 100 --batch_size 16 --hidden_size 512 --arc_space 512 --arc_tag_space 128 --num_layers 3 --num_filters 100 --use_char --use_pos  --word_dim 300 --char_dim 100 --pos_dim 100 --initializer xavier --opt adam --learning_rate 0.002 --decay_rate 0.5 --schedule 6 --clip 5.0 --gamma 0.0 --epsilon 1e-6 --p_rnn 0.33 0.33 --p_in 0.33 --p_out 0.33 --arc_decode mst --unk_replace 0.5 --punct_set '.' '``'  ':' ','  --word_embedding fasttext --word_path "data/multilingual_word_embeddings/cc.cs.300.vec" --char_embedding random --gating --num_gates 4 --load_sequence_taggers_paths saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_relative_pos_based_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_number_of_children_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt saved_models/ud_sequence_tagger_cs_fictree_cs_pdt_distance_from_the_root_unlabeled/src_domain_cs_fictree_tgt_domain_cs_pdt.pt --model_path saved_models/ud_parser_cs_fictree_cs_pdt_ensemble_gating/
