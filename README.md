@@ -112,8 +112,6 @@ If you wish to integrate the base parser with only one (or two) sequence taggers
 
 There is also an option to freeze the sequence tagger encoders, simply by adding `--freeze` to the command line.
 
-## Final step - Running the Combined DCST Parser
-
 ## Citation
 ```
 @article{doi:10.1162/tacl\_a\_00294,
