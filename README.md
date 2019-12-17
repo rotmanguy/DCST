@@ -1,3 +1,6 @@
+Official code for the paper ["Deep Contextualized Self-training for Low Resource Dependency Parsing"](https://www.mitpressjournals.org/doi/pdf/10.1162/tacl_a_00294).\
+If you use this code please cite our paper.
+
 # Requirements
 Simply run:
 ```
@@ -108,3 +111,28 @@ python examples/GraphParser_for_DA.py --dataset ud --src_domain cs_fictree --tgt
 If you wish to integrate the base parser with only one (or two) sequence taggers, simply change the `num_gates`, `load_sequence_taggers_paths` and `model_path` inputs accordingly.
 
 There is also an option to freeze the sequence tagger encoders, simply by adding `--freeze` to the command line.
+
+## Final step - Running the Combined DCST Parser
+
+## Citation
+```
+@article{doi:10.1162/tacl\_a\_00294,
+author = {Rotman, Guy and Reichart, Roi},
+title = {Deep Contextualized Self-training for Low Resource Dependency Parsing},
+journal = {Transactions of the Association for Computational Linguistics},
+volume = {7},
+number = {},
+pages = {695-713},
+year = {2019},
+doi = {10.1162/tacl\_a\_00294},
+
+URL = { 
+        https://doi.org/10.1162/tacl_a_00294
+    
+},
+eprint = { 
+        https://doi.org/10.1162/tacl_a_00294
+    
+}
+}
+```
