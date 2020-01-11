@@ -56,13 +56,13 @@ def write_ud_files(args):
                         new_line = [id, word, pos, ner, head, arc_tag]
                         sentences.append(new_line)
             print('Language: %s Split: %s Num. Sentences: %s ' % (language, split, num_sentences))
-            # if not os.path.exists('data'):
-            #     os.makedirs('data')
-            # write_data_path = 'data/ud_pos_ner_dp_' + split + '_' + language
-            # print('creating %s' % write_data_path)
-            # with open(write_data_path, 'w') as f:
-            #     for line in sentences:
-            #         f.write('\t'.join(line) + '\n')
+            if not os.path.exists('data'):
+                os.makedirs('data')
+            write_data_path = 'data/ud_pos_ner_dp_' + split + '_' + language
+            print('creating %s' % write_data_path)
+            with open(write_data_path, 'w') as f:
+                for line in sentences:
+                    f.write('\t'.join(line) + '\n')
 
 def main():
     # Parse arguments
