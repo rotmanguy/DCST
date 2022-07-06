@@ -57,7 +57,7 @@ toolz==0.10.0
 torch==1.1.0
 torchvision==0.3.0
 tqdm==4.38.0
-ujson==5.2.0
+ujson==5.4.0
 urllib3==1.26.5
 wcwidth==0.1.7
 wrapt==1.10.11
